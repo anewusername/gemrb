@@ -547,6 +547,8 @@ public:
 	GameScript(const ieResRef ResRef, Scriptable* Myself,
 		int ScriptLevel = 0, bool AIScript = false);
 	~GameScript();
+	bool dead;
+	bool running;
 
 	const char *GetName() { return Name; }
 	static void ExecuteString(Scriptable* Sender, const char* String);

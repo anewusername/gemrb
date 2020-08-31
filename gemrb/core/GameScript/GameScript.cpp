@@ -1840,6 +1840,8 @@ GameScript::GameScript(const ieResRef ResRef, Scriptable* MySelf,
 	strnlwrcpy( Name, ResRef, 8 );
 
 	script = CacheScript( Name, AIScript);
+	dead = false;
+	running = false;
 }
 
 GameScript::~GameScript(void)
@@ -2068,6 +2070,8 @@ static Condition* ReadCondition(DataStream* stream)
  */
 bool GameScript::Update(bool *continuing, bool *done)
 {
+	running = true;
+
 	if (!MySelf)
 		return false;
 
@@ -2093,6 +2097,7 @@ bool GameScript::Update(bool *continuing, bool *done)
 					if (MySelf->GetInternalFlag()&IF_NOINT) {
 						// we presumably don't want any further execution?
 						if (done) *done = true;
+							running = false;
 						return false;
 					}
 
@@ -2107,6 +2112,7 @@ bool GameScript::Update(bool *continuing, bool *done)
 						if (core->HasFeature(GF_3ED_RULES)) {
 							if (done) *done = true;
 						}
+						running = false;
 						return false;
 					}
 
@@ -2122,10 +2128,12 @@ bool GameScript::Update(bool *continuing, bool *done)
 			if (continuing) *continuing = continueExecution;
 			if (!continueExecution) {
 				if (done) *done = true;
+				running = false;
 				return true;
 			}
 		}
 	}
+	running = false;
 	return continueExecution;
 }
 
